@@ -10,9 +10,9 @@ deselect the 'normal' option when exporting a new obj from meshlab.
 
 
 To use,
-Include the js in your html
+Reference the js in your html after where you referenced three.js
 ```html
-<script src="js/loaders/OBJVertexColorLoader.js" type="text/javascript"></script>
+<script src="OBJVertexColorLoader.js" type="text/javascript"></script>
 ```
 
 Then, very similar to how you would normally load a standard obj, but 
