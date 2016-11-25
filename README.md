@@ -2,7 +2,7 @@
 Three.js obj loader with vertex color support
 
 
-See example usgae at 
+See example usage at 
 https://biizii.com/objVertexColors.html
 
 Note that at this time, the objVertexColors.js only supports the meshlab obj export option for 'color',
