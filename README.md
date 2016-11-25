@@ -8,5 +8,21 @@ https://biizii.com/objVertexColors.html
 Note that at this time, the objVertexColors.js only supports the meshlab obj export option for 'color',
 deselect the 'normal' option when exporting a new obj from meshlab.
 
+
+To use,
+Include the js in your html
+```html
+<script src="js/loaders/OBJVertexColorLoader.js" type="text/javascript"></script>
+```
+
+Then, very similar to how you would normally load a standard obj, but 
+```javascript
+var loader = new THREE.OBJVertexColorLoader(manager);
+loader.load('example.obj', function (object) {
+  scene.add(object);
+}, onProgress, onError);
+
+```
+
 Sean
 
