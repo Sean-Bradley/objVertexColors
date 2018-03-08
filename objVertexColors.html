@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>three.js webgl - loaders - OBJ with Vertex Colors</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <script type='text/javascript' src="js/three.min.js"></script>
+    <script type='text/javascript' src="js/TrackballControls.js"></script>
+    <script type='text/javascript' src='js/tween.min.js'></script>
+
+    <script type='text/javascript' src="OBJVertexColorLoader.js"></script>
+        
+    <script>
+
+        var container;
+        var camera, controls, scene, renderer;
+        var mouse = { x: 0, y: 0 };
+        var windowHalfX = window.innerWidth / 2;
+        var windowHalfY = window.innerHeight / 2;
+        var tween;
+        var raycaster;
+        var objects = [];
+
+        init();
+        animate();
+
+        function init() {
+
+            container = document.createElement('div');
+            document.body.appendChild(container);
+
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+            camera.position.z = -10;
+
+            controls = new THREE.TrackballControls(camera);
+            controls.rotateSpeed = 4.0;
+            controls.zoomSpeed = 2;
+            controls.panSpeed = 0.8;
+            controls.noZoom = false;
+            controls.noPan = false;
+            controls.staticMoving = true;
+            controls.dynamicDampingFactor = 0.3;
+            
+            scene = new THREE.Scene();
+
+            var ambient = new THREE.AmbientLight(0x888888);
+            scene.add(ambient);
+
+            var directionalLight = new THREE.DirectionalLight(0xffeedd);
+            directionalLight.position.set(0, -100, 0);
+            scene.add(directionalLight);
+
+            var manager = new THREE.LoadingManager();
+            manager.onProgress = function (item, loaded, total) {
+
+                console.log(item, loaded, total);
+
+            };
+
+            var onProgress = function (xhr) {
+                if (xhr.lengthComputable) {
+                    var percentComplete = xhr.loaded / xhr.total * 100;
+                    console.log(Math.round(percentComplete, 2) + '% downloaded');
+                }
+            };
+
+            var onError = function (xhr) {
+            };
+
+            var loader = new THREE.OBJVertexColorLoader(manager);
+            loader.load('models/emmy3d_1.obj', function (object) {
+                object.rotation.x = Math.PI / 2;
+                console.dir(object);
+                scene.add(object);
+                objects.push(object);
+            }, onProgress, onError);
+
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            raycaster = new THREE.Raycaster();
+
+            window.addEventListener('resize', onWindowResize, false);
+            renderer.domElement.ondblclick = onDoubleClick;
+        }
+
+        function onWindowResize() {
+
+            windowHalfX = window.innerWidth / 2;
+            windowHalfY = window.innerHeight / 2;
+
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+
+            controls.handleResize();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function onDoubleClick(event) {
+            event.preventDefault();
+            if (event.button == 0) {
+                mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+                mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+                raycaster.setFromCamera(mouse, camera);
+
+                var intersects = raycaster.intersectObjects(objects, true);
+                console.dir(intersects);
+                if (intersects.length > 0) {
+                    tween = new TWEEN.Tween(controls.target)
+                              .to({
+                                  x: intersects[0].point.x,
+                                  y: intersects[0].point.y,
+                                  z: intersects[0].point.z
+                              }, 250)
+                              .start();
+                }
+            }
+        }
+        function animate(time) {
+
+            requestAnimationFrame(animate);
+            TWEEN.update();
+            controls.update();
+            render();
+        }
+
+        function render() {
+
+            renderer.render(scene, camera);
+        }
+
+    </script>
+
+</body>
+</html>
