@@ -1,5 +1,6 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>seanwasere youtube - three.js webgl - loaders - OBJ with Vertex Colors</title>
     <meta charset="utf-8">
@@ -11,6 +12,15 @@
             margin: 0px;
             overflow: hidden;
         }
+
+        #progressBar {
+            width: 500px;
+            height: 24px;
+            position: absolute;
+            left: 50%;
+            top: 60px;
+            margin-left: -250px;
+        }
     </style>
 </head>
 
@@ -20,7 +30,9 @@
     <script type='text/javascript' src='js/tween.min.js'></script>
 
     <script type='text/javascript' src="OBJVertexColorLoader.js"></script>
-        
+
+    <progress value="0" max="100" id="progressBar"></progress>
+
     <script>
 
         var container;
@@ -31,11 +43,15 @@
         var tween;
         var raycaster;
         var objects = [];
+        var progressBar;
 
         init();
         animate();
 
         function init() {
+
+            progressBar = document.getElementById('progressBar');
+            //progressBar.style.display = "none";
 
             container = document.createElement('div');
             document.body.appendChild(container);
@@ -51,7 +67,7 @@
             controls.noPan = false;
             controls.staticMoving = true;
             controls.dynamicDampingFactor = 0.3;
-            
+
             scene = new THREE.Scene();
 
             var ambient = new THREE.AmbientLight(0x888888);
@@ -71,19 +87,23 @@
             var onProgress = function (xhr) {
                 if (xhr.lengthComputable) {
                     var percentComplete = xhr.loaded / xhr.total * 100;
-                    console.log(Math.round(percentComplete, 2) + '% downloaded');
+                    progressBar.value = percentComplete;
+                    //   console.log(Math.round(percentComplete, 2) + '% downloaded');
+                    progressBar.style.display = "block";
                 }
             };
+            var onError = function (xhr) { };
 
-            var onError = function (xhr) {
-            };
 
             var loader = new THREE.OBJVertexColorLoader(manager);
             loader.load('models/emmy3d_1.obj', function (object) {
                 object.rotation.x = Math.PI / 2;
-                console.dir(object);
+                //console.dir(object);
                 scene.add(object);
                 objects.push(object);
+
+                //progressBar.style.display = "none";
+
             }, onProgress, onError);
 
             renderer = new THREE.WebGLRenderer();
@@ -119,15 +139,15 @@
                 raycaster.setFromCamera(mouse, camera);
 
                 var intersects = raycaster.intersectObjects(objects, true);
-                console.dir(intersects);
+                //console.dir(intersects);
                 if (intersects.length > 0) {
                     tween = new TWEEN.Tween(controls.target)
-                              .to({
-                                  x: intersects[0].point.x,
-                                  y: intersects[0].point.y,
-                                  z: intersects[0].point.z
-                              }, 250)
-                              .start();
+                        .to({
+                            x: intersects[0].point.x,
+                            y: intersects[0].point.y,
+                            z: intersects[0].point.z
+                        }, 250)
+                        .start();
                 }
             }
         }
@@ -147,4 +167,5 @@
     </script>
 
 </body>
+
 </html>
