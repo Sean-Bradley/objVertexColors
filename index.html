@@ -65,7 +65,7 @@
             controls.panSpeed = 0.8;
             controls.noZoom = false;
             controls.noPan = false;
-            controls.staticMoving = true;
+            controls.staticMoving = false;
             controls.dynamicDampingFactor = 0.3;
 
             scene = new THREE.Scene();
@@ -78,11 +78,9 @@
             scene.add(directionalLight);
 
             var manager = new THREE.LoadingManager();
-            manager.onProgress = function (item, loaded, total) {
-
-                console.log(item, loaded, total);
-
-            };
+            // manager.onProgress = function (item, loaded, total) {
+            //     console.log(item, loaded, total);
+            // };
 
             var onProgress = function (xhr) {
                 if (xhr.lengthComputable) {
@@ -97,12 +95,31 @@
 
             var loader = new THREE.OBJVertexColorLoader(manager);
             loader.load('models/emmy3d_1.obj', function (object) {
-                object.rotation.x = Math.PI / 2;
+                object.rotation.x = Math.PI;
                 //console.dir(object);
                 scene.add(object);
                 objects.push(object);
 
                 progressBar.style.display = "none";
+
+
+                tween = new TWEEN.Tween(controls.target)
+                    .to({
+                        x: 1.686643093956337,
+                        y: -3.954080305865332,
+                        z: -2.3580904765270243
+                    }, 1000)
+                    .easing(TWEEN.Easing.Quintic.Out)
+                    .start();
+
+                tween = new TWEEN.Tween(camera.position)
+                    .to({
+                        x: 3.558467649434143,
+                        y: -2.5468095593526616,
+                        z: -2.3931801395362005
+                    }, 1000)
+                    .easing(TWEEN.Easing.Quintic.Out)
+                    .start();
 
             }, onProgress, onError);
 
@@ -140,6 +157,7 @@
 
                 var intersects = raycaster.intersectObjects(objects, true);
                 //console.dir(intersects);
+                //console.log(camera.position)
                 if (intersects.length > 0) {
                     tween = new TWEEN.Tween(controls.target)
                         .to({

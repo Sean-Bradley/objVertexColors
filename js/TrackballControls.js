@@ -179,7 +179,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 				quaternion.setFromAxisAngle( axis, angle );
 
 				_eye.applyQuaternion( quaternion );
-				_this.object.up.applyQuaternion( quaternion );
+				//_this.object.up.applyQuaternion( quaternion );				
+				_this.object.up.applyQuaternion( new THREE.Vector4(0,0,0,1) );//added by sean. it make the camera up always up
 
 				_lastAxis.copy( axis );
 				_lastAngle = angle;
