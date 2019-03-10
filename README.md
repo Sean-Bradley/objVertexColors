@@ -24,5 +24,8 @@ loader.load('example.obj', function (object) {
 
 ```
 
+## Video tutorial on how to create 3d Model from iPhone photos using VisualSFM, CMPMVS, MeshLab and Blender
+[![Creating a 3d Model from iPhone photos using VisualSFM, CMPMVS, MeshLab and Blender](https://img.youtube.com/vi/IStU-WP2XKs/0.jpg)](https://www.youtube.com/watch?v=IStU-WP2XKs) 
+
 Sean
 
